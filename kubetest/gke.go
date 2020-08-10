@@ -510,16 +510,16 @@ func (g *gkeDeployer) setupBastion() error {
 	}
 	var filtersToTry []string
 	// Use exact name first, VM does not have to belong to the cluster
-	exactFilter := "name=" + g.sshProxyInstanceName
+	exactFilter := "name = " + g.sshProxyInstanceName
 	filtersToTry = append(filtersToTry, exactFilter)
 	// As a fallback - use proxy instance name as a regex but check only cluster nodes
-	var igFilters []string
+	var igNames []string
 	for _, ig := range g.instanceGroups {
-		igFilters = append(igFilters, fmt.Sprintf("(metadata.created-by ~ %s)", ig.path))
+		igNames = append(igNames, fmt.Sprintf("(metadata.created-by ~ %s)", ig.path))
 	}
-	fuzzyFilter := fmt.Sprintf("(name ~ %s) AND (%s)",
+	fuzzyFilter := fmt.Sprintf("name ~ %s AND metadata.created-by : instanceGroupManagers AND metadata.created-by : (%s)",
 		g.sshProxyInstanceName,
-		strings.Join(igFilters, " OR "))
+		strings.Join(igNames, ", "))
 	filtersToTry = append(filtersToTry, fuzzyFilter)
 
 	var bastion, zone string
