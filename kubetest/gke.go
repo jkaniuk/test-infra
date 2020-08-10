@@ -406,8 +406,9 @@ func (g *gkeDeployer) DumpClusterLogs(localPath, gcsPath string) error {
 	// gkeLogDumpTemplate is a template of a shell script where
 	// - %[1]s is the project
 	// - %[2]s is the zone
-	// - %[3]s is a filter composed of the instance groups
-	// - %[4]s is the log-dump.sh command line
+	// - %[3]s is the nodes OS distribution
+	// - %[4]s is a filter composed of the instance groups
+	// - %[5]s is the log-dump.sh command line
 	const gkeLogDumpTemplate = `
 function log_dump_custom_get_instances() {
   if [[ $1 == "master" ]]; then return 0; fi
